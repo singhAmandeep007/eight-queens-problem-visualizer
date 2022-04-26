@@ -74,6 +74,9 @@ const Container = styled.div`
 
   padding: 1rem 0;
 
+  border-top: 2px solid var(--clr-secondary);
+  border-bottom: 2px solid var(--clr-secondary);
+
   @media (max-width: 1000px) {
     gap: 1rem;
     padding-left: 2rem;
@@ -86,18 +89,13 @@ const Container = styled.div`
 `;
 
 const PlayPauseButton = styled(Button)`
-  /* margin-left: 10rem; */
-  border-radius: 50%;
+  /* border-radius: 50%; */
   padding: 1rem;
   border: 2px solid var(--clr-white);
-  font-size: 2.5rem;
+  font-size: 3.5rem;
   color: var(--clr-white);
 
   display: flex;
   justify-content: center;
   align-items: center;
-
-  @media (max-width: 1000px) {
-    margin-right: 14rem;
-  }
 `;

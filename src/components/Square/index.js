@@ -11,9 +11,6 @@ const Square = ({
 }) => {
   const handleClick = () => {
     if (!(isQueenPlaced || queenPositions.length < 8)) return;
-
-    console.log('isQueenPlaced', isQueenPlaced);
-
     updateQueenPosition(isQueenPlaced, position);
   };
 
@@ -26,7 +23,7 @@ const Square = ({
     <SquareEl
       className={className}
       onClick={handleClick}
-      data-position={position}
+      // data-position={position}
       $position={position}
     >
       {isQueenPlaced ? <span>👑</span> : ''}

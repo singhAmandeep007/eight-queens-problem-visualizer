@@ -89,6 +89,7 @@ code {
 
 	--clr-primary-light:#01ADE4;
 	--clr-primary-background:#01ade43d; 
+	--clr-primary-background-1:#00000008; 
 
 	--clr-secondary:#446cb2;
 
@@ -109,10 +110,10 @@ html {
 		font-size:  62.5%  !important; // 10px
 	}
 	@media only screen and (max-width: ${breakpoints.bpMedium}) {
-		font-size:  50%  !important; // 10px
+		font-size:  50%  !important; // 8px
 	}
 	@media only screen and (max-width: ${breakpoints.bpSmall}) {
-		font-size:  37.5%  !important; // 10px
+		font-size:  37.5%  !important; // 6px
 	}
 }
 

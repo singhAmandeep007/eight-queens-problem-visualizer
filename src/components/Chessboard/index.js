@@ -253,9 +253,6 @@ const Chessboard = () => {
 export default Chessboard;
 
 const Container = styled.div`
-  border-radius: 5px;
-  border: 2px solid var(--color-primary);
-
   display: grid;
   grid-template-columns: max-content 1fr;
   grid-template-rows: ${({ $boardSize }) => `calc( ${$boardSize} * 8rem);`};
@@ -268,7 +265,7 @@ const Container = styled.div`
   @media (max-width: 1000px) {
     grid-template-columns: max-content;
     grid-template-rows: ${({ $boardSize }) =>
-      `calc( ${$boardSize} * 8rem) 1fr`};
+      `repeat(2,calc( ${$boardSize} * 8rem))`};
   }
 `;
 
@@ -284,8 +281,8 @@ const SolutionsList = styled.div`
     font-size: 2rem;
     font-weight: normal;
 
-    background-color: var(--clr-primary);
-    color: var(--clr-white);
+    border: 2px solid var(--clr-dark);
+    color: var(--clr-dark);
     border-radius: 5px;
     margin-bottom: 5px;
     padding: 0.5rem 0;
@@ -305,9 +302,9 @@ const SolutionsList = styled.div`
 
   li {
     font-size: 2rem;
-    border-bottom: 1px solid var(--clr-secondary);
+    border-bottom: 1px solid var(--clr-dark);
     text-decoration: none;
-    color: var(--clr-secondary);
+    color: var(--clr-dark);
     display: block;
     /* width: min(20rem, 40rem); */
     line-height: 4rem;
@@ -316,8 +313,7 @@ const SolutionsList = styled.div`
   li:hover {
     cursor: pointer;
     text-decoration: none;
-    color: var(--clr-secondary);
-    background: var(--clr-primary-background);
+    background: var(--clr-primary-background-1);
   }
 `;
 
@@ -326,7 +322,8 @@ const ChessBoard = styled.div`
   grid-template-columns: ${({ $boardSize }) =>
     `repeat( ${$boardSize} , 1fr );`};
 
-  border: 2px solid var(--clr-dark);
+  overflow: hidden;
+  outline: 2px solid var(--clr-dark);
 
   pointer-events: ${({ $isDisabled }) => ($isDisabled ? 'none' : 'all')};
 `;

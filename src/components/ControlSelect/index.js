@@ -47,9 +47,13 @@ const ControlLabel = styled.label`
   font-weight: 300;
 
   opacity: ${(props) => (props.$disabled ? '0.5' : '1')};
+  @media (max-width: 1000px) {
+    font-size: 1.5rem;
+  }
 `;
 const SelectContainer = styled.div`
   position: relative;
+  border: 2px solid var(--clr-white);
 
   background: var(--clr-secondary);
   overflow: hidden;
@@ -62,6 +66,9 @@ const SelectContainer = styled.div`
   padding: 0.8rem 0;
 
   opacity: ${(props) => (props.$disabled ? '0.5' : '1')};
+  @media (max-width: 1000px) {
+    width: min(20rem, 100px);
+  }
 
   &:after {
     content: '🔽';
