@@ -20,13 +20,13 @@ const ControlContext = createContext(control);
 
 export const ControlContextProvider = (props) => {
   const [simulationSpeed, setSimulationSpeed] = useState(
-    Object.values(simulationSpeedControlBarConfig.options)[0]
+    Object.values(simulationSpeedControlBarConfig.options)[2]
   );
   const [boardSize, setBoardSize] = useState(
-    Object.values(boardSizeControlBarConfig.options)[0]
+    Object.values(boardSizeControlBarConfig.options)[4]
   );
   const [mode, setMode] = useState(
-    Object.values(modeControlBarConfig.options)[0]
+    Object.values(modeControlBarConfig.options)[1]
   );
   const [isSimulating, setIsSimulating] = useState(false);
 

@@ -58,25 +58,29 @@ const SelectContainer = styled.div`
   margin-top: 1rem;
 
   width: min(20rem, 200px);
-  padding: 8px;
+
+  padding: 0.8rem 0;
 
   opacity: ${(props) => (props.$disabled ? '0.5' : '1')};
 
   &:after {
     content: '🔽';
-
     position: absolute;
-    top: 0;
-    right: 0;
+    right: 0px;
     bottom: 0;
+    top: 50%;
+    transform: translate(-50%, -50%);
 
     background: var(--clr-secondary);
     pointer-events: none;
-    font-size: 30px;
+    font-size: 1.6rem;
+    margin-bottom: -3px;
   }
 `;
 
 const Select = styled.select`
+  font-size: 1.5rem;
+
   position: relative;
   display: inline-block;
 
@@ -93,9 +97,7 @@ const Select = styled.select`
   width: 100%;
   height: 100%;
   margin: 0;
-  padding: 0 0 0 5px;
+  padding-left: 1.5rem;
   color: var(--clr-white);
   cursor: pointer;
-
-  font-size: 20px;
 `;

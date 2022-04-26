@@ -1,7 +1,7 @@
 export const SIMULATION_SPEED_TYPE = {
-  slow: 'slow',
-  moderate: 'moderate',
-  fast: 'fast',
+  slow: 100,
+  moderate: 50,
+  fast: 0,
 };
 export const MODE_TYPE = {
   manual: 'manual',

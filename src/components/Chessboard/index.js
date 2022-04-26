@@ -1,9 +1,17 @@
-import React, { useContext, useState, useEffect, useMemo } from 'react';
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  useRef,
+} from 'react';
 import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 import ControlContext from '../../contexts';
 import Square from '../Square';
-import { checkIsSolved } from '../../constants';
+import { checkIsSolved, checkIsAttacking, MODE_TYPE } from '../../constants';
+import { controllableDelay } from '../../utils';
 import Button from '../../common/button';
 
 import celebration1 from '../../assets/celebration1.gif';
@@ -26,25 +34,112 @@ const memoizedCheckIsSolved = (() => {
 })();
 
 const Chessboard = () => {
-  let { boardSize, mode, isSimulating } = useContext(ControlContext);
+  let { boardSize, mode, isSimulating, toggleSimulation, simulationSpeed } =
+    useContext(ControlContext);
   boardSize = Number(boardSize);
 
-  console.log('called');
+  const cancelSimulationFn = useRef(null);
 
   const [queenPositions, setQueenPositions] = useState([]);
   const [isSolved, setIsSolved] = useState(false);
   const [isPreview, setIsPreview] = useState(false);
   const [solutions, setSolutions] = useState([]);
 
+  const memoizedStartSimulation = useCallback(() => {
+    function getAllSolutions(rows, columns) {
+      return new Promise(async (resolve, _) => {
+        if (rows <= 0) {
+          resolve([[]]);
+        } else {
+          let solutions = await getSolution(rows - 1, columns);
+          resolve(solutions);
+        }
+      });
+    }
+
+    function getSolution(rows, columns) {
+      return new Promise(async (resolve, _) => {
+        let newSolutions = [];
+        let prevSolutions = await getAllSolutions(rows, columns);
+
+        await [
+          ...Array.from({ length: prevSolutions.length }, (_, i) => i + 1),
+        ].reduce((p, _, i) => {
+          return p.then(async () => {
+            let solution = prevSolutions[i];
+            await [...Array.from({ length: columns }, (_, i) => i + 1)].reduce(
+              (p, _, column) => {
+                let position = (rows + 1) * 10 + (column + 1);
+                return p
+                  .then(async () => {
+                    let newQueenPositions = [
+                      ...queenPositions,
+                      ...solution,
+                      position,
+                    ];
+                    setQueenPositions(newQueenPositions);
+
+                    if (!checkIsAttacking(position, solution)) {
+                      let result = solution.concat([position]);
+                      newSolutions.push(result);
+                      if (result.length === columns) {
+                        setSolutions((prevState) => {
+                          return Array.from(
+                            new Map(
+                              [...[...prevState], [...result]].map((s) => [
+                                s.join(),
+                                s,
+                              ])
+                            ).values()
+                          );
+                        });
+                      }
+                    }
+                  })
+                  .then(() => {
+                    let [timerId, p] = controllableDelay(simulationSpeed);
+                    cancelSimulationFn.current = timerId;
+                    return p;
+                  });
+              },
+              Promise.resolve()
+            );
+          });
+        }, Promise.resolve());
+        resolve([...newSolutions]);
+      });
+    }
+
+    getAllSolutions(boardSize, boardSize).then((result) => {
+      setQueenPositions([...result[result.length - 1]]);
+      toggleSimulation();
+      cancelSimulationFn.current = null;
+    });
+  }, [boardSize, queenPositions, simulationSpeed, toggleSimulation]);
+
   useEffect(() => {
-    setQueenPositions([]);
-    setIsSolved(false);
-    setIsPreview(false);
-    setSolutions([]);
-  }, [boardSize, mode, isSimulating]);
+    resetAllState();
+  }, [boardSize, mode]);
+
+  useEffect(() => {
+    if (isSimulating) {
+      resetAllState();
+    }
+
+    if (!isSimulating && cancelSimulationFn.current) {
+      window.clearTimeout(cancelSimulationFn.current);
+      cancelSimulationFn.current = null;
+      resetAllState();
+    }
+  }, [isSimulating]);
+
+  useEffect(() => {
+    if (isSimulating && queenPositions.length === 0) {
+      memoizedStartSimulation();
+    }
+  }, [isSimulating, queenPositions.length]);
 
   const sizeArr = useMemo(() => {
-    console.log('aw');
     let arr = [];
     for (let i = 1; i <= boardSize; i++) {
       for (let j = 1; j <= boardSize; j++) {
@@ -64,7 +159,6 @@ const Chessboard = () => {
     let checkIsProblemSolved = memoizedCheckIsSolved(positions);
 
     if (checkIsProblemSolved && positions.length === boardSize) {
-      console.log('wd');
       setQueenPositions(positions);
       setIsSolved(true);
       setSolutions(
@@ -85,6 +179,12 @@ const Chessboard = () => {
     setIsSolved(false);
     setIsPreview(false);
   };
+  const resetAllState = function () {
+    setQueenPositions([]);
+    setIsSolved(false);
+    setIsPreview(false);
+    setSolutions([]);
+  };
 
   const handleListClick = function (e) {
     let { solutionKey = null } = e.target.dataset;
@@ -99,7 +199,12 @@ const Chessboard = () => {
     <Container $boardSize={boardSize}>
       <ChessBoardContainer>
         <ChessBoard
-          $isDisabled={isSolved || isPreview || isSimulating}
+          $isDisabled={
+            isSolved ||
+            isPreview ||
+            isSimulating ||
+            mode === MODE_TYPE.simulation
+          }
           $boardSize={boardSize}
         >
           {sizeArr.map(([x, y, key]) => {
@@ -117,12 +222,12 @@ const Chessboard = () => {
         </ChessBoard>
 
         <CelebarationEl $boardSize={boardSize}>
-          {(isSolved || isPreview) && (
+          {(isSolved || isPreview) && mode !== MODE_TYPE.simulation && (
             <StyledButton onClick={handleResetChessBoard}>
               Play Again
             </StyledButton>
           )}
-          {isSolved && <img src={celebration1} />}
+          {isSolved && <img src={celebration1} alt="celebration" />}
         </CelebarationEl>
       </ChessBoardContainer>
       <SolutionsList>
@@ -158,6 +263,13 @@ const Container = styled.div`
   gap: 5rem;
   margin: 1rem;
   height: max-content;
+  margin-top: 3.5rem;
+
+  @media (max-width: 1000px) {
+    grid-template-columns: max-content;
+    grid-template-rows: ${({ $boardSize }) =>
+      `calc( ${$boardSize} * 8rem) 1fr`};
+  }
 `;
 
 const ChessBoardContainer = styled.div`
@@ -186,6 +298,9 @@ const SolutionsList = styled.div`
     padding: 0;
     overflow-y: auto;
     width: min(20rem, 40rem);
+
+    margin-left: auto;
+    margin-right: auto;
   }
 
   li {

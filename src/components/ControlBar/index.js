@@ -2,6 +2,9 @@ import React, { useContext } from 'react';
 import styled from 'styled-components';
 import Button from '../../common/button';
 
+import { ReactComponent as StopSvg } from './../../assets/stop.svg';
+import { ReactComponent as PlaySvg } from './../../assets/play.svg';
+
 import ControlSelect from '../ControlSelect';
 import {
   simulationSpeedControlBarConfig,
@@ -13,8 +16,6 @@ import {
 import ControlContext from '../../contexts';
 
 const ControlBar = () => {
-  console.log('control bar');
-
   const {
     simulationSpeed,
     handleSimulationSpeedChange,
@@ -53,7 +54,7 @@ const ControlBar = () => {
           title={isSimulating ? 'click to stop' : 'click to start'}
           onClick={toggleSimulation}
         >
-          {isSimulating ? '⏹️' : '▶️'}
+          {isSimulating ? <StopSvg /> : <PlaySvg />}
         </PlayPauseButton>
       )}
     </Container>
@@ -72,6 +73,16 @@ const Container = styled.div`
   gap: 5rem;
 
   padding: 1rem 0;
+
+  @media (max-width: 1000px) {
+    gap: 1rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+
+    flex-wrap: wrap;
+
+    justify-content: center;
+  }
 `;
 
 const PlayPauseButton = styled(Button)`
@@ -79,5 +90,14 @@ const PlayPauseButton = styled(Button)`
   border-radius: 50%;
   padding: 1rem;
   border: 2px solid var(--clr-white);
-  font-size: 3rem;
+  font-size: 2.5rem;
+  color: var(--clr-white);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @media (max-width: 1000px) {
+    margin-right: 14rem;
+  }
 `;

@@ -65,7 +65,7 @@ select {
 /* Remove all animations, transitions and smooth scroll for people that prefer not to see them */
 @media (prefers-reduced-motion: reduce) {
   html:focus-within {
-   scroll-behavior: auto;
+		scroll-behavior: auto;
   }
   
   *,
@@ -101,33 +101,21 @@ code {
 
 html {
 
-		@media only screen and (min-width: ${breakpoints.bpXXLarge}) {
-				font-size: 75% !important; // 12px
-		}
-
-		@media only screen and (max-width: ${breakpoints.bpXXLarge}) {
-			font-size:  62.5%  !important; // 10px
-		}
-/*
-		@media only screen and (max-width: ${breakpoints.bpLarge}) {
-				font-size: 75% !important; // 12px
-		}
-
-		@media only screen and (max-width: ${breakpoints.bpMedium}) {
-				font-size: 62.5% !important; // 10px
-		}
-		@media only screen and (max-width: ${breakpoints.bpSmall}) {
-				font-size: 59.375% !important; // 9.5px
-		}
-		@media only screen and (max-width: ${breakpoints.bpXSmall}) {
-				font-size: 50% !important; // 8px
-		} */
+	@media only screen and (min-width: ${breakpoints.bpXXLarge}) {
+			font-size: 75% !important; // 12px
 	}
 
+	@media only screen and (max-width: ${breakpoints.bpXXLarge}) {
+		font-size:  62.5%  !important; // 10px
+	}
+	@media only screen and (max-width: ${breakpoints.bpMedium}) {
+		font-size:  50%  !important; // 10px
+	}
+	@media only screen and (max-width: ${breakpoints.bpSmall}) {
+		font-size:  37.5%  !important; // 10px
+	}
+}
 
-	/*
- *  STYLE 4
- */
 
 ::-webkit-scrollbar-track
 {

@@ -9,7 +9,7 @@ function App() {
       <GlobalStyles />
       <main>
         <Container>
-          <Title> The 8 Queens Problem Simulation</Title>
+          <Title> The 8 Queens Problem</Title>
           <Dashboard />
         </Container>
       </main>
