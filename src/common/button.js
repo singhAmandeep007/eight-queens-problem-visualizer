@@ -20,6 +20,10 @@ const Button = styled.button`
     border: 0;
   }
 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   /* &:hover {
     transform: translateY(-3px);
   } */
