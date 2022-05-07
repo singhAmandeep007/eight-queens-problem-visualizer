@@ -11,7 +11,7 @@ import { v4 as uuidv4 } from 'uuid';
 import ControlContext from '../../contexts';
 import Square from '../Square';
 import { checkIsSolved, checkIsAttacking, MODE_TYPE } from '../../constants';
-import { controllableDelay } from '../../utils';
+import { delay } from '../../utils';
 import Button from '../../common/button';
 
 import celebration1 from '../../assets/celebration1.gif';
@@ -38,106 +38,176 @@ const Chessboard = () => {
     useContext(ControlContext);
   boardSize = Number(boardSize);
 
-  const cancelSimulationFn = useRef(null);
+  const cancelSimulation = useRef(false);
+  const isInitialRender = useRef(true);
+  const isAutomaticallyStopped = useRef(false);
 
   const [queenPositions, setQueenPositions] = useState([]);
   const [isSolved, setIsSolved] = useState(false);
   const [isPreview, setIsPreview] = useState(false);
   const [solutions, setSolutions] = useState([]);
 
-  const memoizedStartSimulation = useCallback(() => {
+  const [isReset, setIsReset] = useState(false);
+
+  const memoizedStartSimulation = function () {
     function getAllSolutions(rows, columns) {
-      return new Promise(async (resolve, _) => {
+      return new Promise(async function (resolve, reject) {
         if (rows <= 0) {
           resolve([[]]);
         } else {
-          let solutions = await getSolution(rows - 1, columns);
-          resolve(solutions);
+          getSolution(rows - 1, columns)
+            .then(function (solutions) {
+              resolve(solutions);
+            })
+            .catch(function (error) {
+              reject(error);
+            });
         }
       });
     }
 
     function getSolution(rows, columns) {
-      return new Promise(async (resolve, _) => {
+      return new Promise(async function (resolve, reject) {
         let newSolutions = [];
-        let prevSolutions = await getAllSolutions(rows, columns);
+        getAllSolutions(rows, columns)
+          .then(async function (prevSolutions) {
+            for (let i = 0; i < prevSolutions.length; i++) {
+              if (cancelSimulation.current) {
+                break;
+              }
 
-        await [
-          ...Array.from({ length: prevSolutions.length }, (_, i) => i + 1),
-        ].reduce((p, _, i) => {
-          return p.then(async () => {
-            let solution = prevSolutions[i];
-            await [...Array.from({ length: columns }, (_, i) => i + 1)].reduce(
-              (p, _, column) => {
+              let solution = prevSolutions[i];
+
+              for (let column = 0; column < columns; column++) {
+                if (cancelSimulation.current) {
+                  break;
+                }
                 let position = (rows + 1) * 10 + (column + 1);
-                return p
-                  .then(async () => {
-                    let newQueenPositions = [
-                      ...queenPositions,
-                      ...solution,
-                      position,
-                    ];
-                    setQueenPositions(newQueenPositions);
+                //console.log('position-------->', position);
+                let newQueenPositions = [
+                  ...queenPositions,
+                  ...solution,
+                  position,
+                ];
+                setQueenPositions(newQueenPositions);
 
-                    if (!checkIsAttacking(position, solution)) {
-                      let result = solution.concat([position]);
-                      newSolutions.push(result);
-                      if (result.length === columns) {
-                        setSolutions((prevState) => {
-                          return Array.from(
-                            new Map(
-                              [...[...prevState], [...result]].map((s) => [
-                                s.join(),
-                                s,
-                              ])
-                            ).values()
-                          );
-                        });
-                      }
-                    }
-                  })
-                  .then(() => {
-                    let [timerId, p] = controllableDelay(simulationSpeed);
-                    cancelSimulationFn.current = timerId;
-                    return p;
-                  });
-              },
-              Promise.resolve()
-            );
+                if (!checkIsAttacking(position, solution)) {
+                  let result = solution.concat([position]);
+                  newSolutions.push(result);
+
+                  if (result.length === columns) {
+                    setSolutions((prevState) => {
+                      return Array.from(
+                        new Map(
+                          [...[...prevState], [...result]].map((s) => [
+                            s.join(),
+                            s,
+                          ])
+                        ).values()
+                      );
+                    });
+                  }
+                }
+                await delay(simulationSpeed);
+                //console.log('after delay,', new Date());
+              }
+            }
+            if (cancelSimulation.current) {
+              throw new Error('Simulation Stopped');
+            } else {
+              resolve([...newSolutions]);
+            }
+          })
+          .catch(function (error) {
+            reject(error);
           });
-        }, Promise.resolve());
-        resolve([...newSolutions]);
       });
     }
 
-    getAllSolutions(boardSize, boardSize).then((result) => {
-      setQueenPositions([...result[result.length - 1]]);
-      toggleSimulation();
-      cancelSimulationFn.current = null;
-    });
-  }, [boardSize, queenPositions, simulationSpeed, toggleSimulation]);
+    getAllSolutions(boardSize, boardSize)
+      .then(function (result) {
+        // to prevent running useEffect cb on simulation end
+        isAutomaticallyStopped.current = true;
+        // set queen positions to last result
+        setQueenPositions([...result[result.length - 1]]);
+        // toggle reset state
+        setIsReset(false);
+        // toggle isSimulating
+        toggleSimulation();
+      })
+      .catch(function (error) {
+        console.log(error);
+        cancelSimulation.current = false;
+        resetAllState();
+      });
+  };
+
+  useEffect(
+    function () {
+      if (!isInitialRender.current) {
+        resetAllState();
+      }
+    },
+    [boardSize, mode]
+  );
 
   useEffect(() => {
-    resetAllState();
-  }, [boardSize, mode]);
-
-  useEffect(() => {
-    if (isSimulating) {
-      resetAllState();
+    function onVisibilityChange() {
+      if (isSimulating) {
+        console.log('called', document.visibilityState);
+        if (document.visibilityState !== 'visible') {
+          toggleSimulation();
+        }
+      }
     }
 
-    if (!isSimulating && cancelSimulationFn.current) {
-      window.clearTimeout(cancelSimulationFn.current);
-      cancelSimulationFn.current = null;
-      resetAllState();
-    }
-  }, [isSimulating]);
+    document.addEventListener('visibilitychange', onVisibilityChange);
 
-  useEffect(() => {
-    if (isSimulating && queenPositions.length === 0) {
-      memoizedStartSimulation();
+    return function () {
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+    };
+  }, [toggleSimulation]);
+
+  useEffect(
+    function () {
+      if (!isInitialRender.current) {
+        if (isSimulating) {
+          cancelSimulation.current = false;
+          resetAllState();
+        }
+
+        if (
+          !isSimulating &&
+          !cancelSimulation.current &&
+          !isAutomaticallyStopped.current
+        ) {
+          cancelSimulation.current = true;
+        }
+
+        if (isAutomaticallyStopped.current) {
+          isAutomaticallyStopped.current = false;
+        }
+      }
+    },
+    [isSimulating]
+  );
+
+  useEffect(
+    function () {
+      if (!isInitialRender.current) {
+        if (isSimulating && isReset) {
+          memoizedStartSimulation();
+        }
+      }
+    },
+    [isReset, isSimulating]
+  );
+
+  useEffect(function () {
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
     }
-  }, [isSimulating, queenPositions.length]);
+  }, []);
 
   const sizeArr = useMemo(() => {
     let arr = [];
@@ -184,6 +254,7 @@ const Chessboard = () => {
     setIsSolved(false);
     setIsPreview(false);
     setSolutions([]);
+    setIsReset(true);
   };
 
   const handleListClick = function (e) {
@@ -295,7 +366,7 @@ const SolutionsList = styled.div`
     margin: 0;
     padding: 0;
     overflow-y: auto;
-    width: min(20rem, 40rem);
+    width: min(25rem, 40rem);
 
     margin-left: auto;
     margin-right: auto;

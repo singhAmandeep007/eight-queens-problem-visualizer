@@ -5,3 +5,9 @@ export const controllableDelay = function (ms) {
   });
   return [timerId, p];
 };
+
+export const delay = function (ms) {
+  return new Promise((resolve, _) => {
+    setTimeout(resolve, ms);
+  });
+};
