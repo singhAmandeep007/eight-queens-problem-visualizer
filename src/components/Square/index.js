@@ -20,13 +20,9 @@ const Square = ({
   }`;
 
   return (
-    <SquareEl
-      className={className}
-      onClick={handleClick}
-      // data-position={position}
-      $position={position}
-    >
-      {isQueenPlaced ? <span>👑</span> : ''}
+    <SquareEl className={className} onClick={handleClick}>
+      <div className="position">{position}</div>
+      {isQueenPlaced ? <span>♕</span> : ''}
     </SquareEl>
   );
 };
@@ -42,15 +38,15 @@ const SquareEl = styled.div`
   user-select: none;
 
   cursor: pointer;
-
-  &::after {
-    content: '${({ $position }) => $position}';
-    position: absolute;
-    font-size: 30%;
-    height: 30%;
-    width: 30%;
-    top: 0;
-    right: 0;
+  & {
+    .position {
+      position: absolute;
+      font-size: 30%;
+      height: 30%;
+      width: 30%;
+      top: 0;
+      right: 0;
+    }
   }
 
   &.black {
@@ -69,7 +65,7 @@ const SquareEl = styled.div`
   }
   &:hover {
     &::before {
-      content: '👑';
+      content: '♕';
       position: absolute;
       transform: translate(-50%, -50%);
       top: 50%;
