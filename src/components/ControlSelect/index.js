@@ -107,4 +107,8 @@ const Select = styled.select`
   padding-left: 1.5rem;
   color: var(--clr-white);
   cursor: pointer;
+
+  option {
+    text-transform: capitalize;
+  }
 `;

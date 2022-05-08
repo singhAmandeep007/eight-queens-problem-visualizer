@@ -8,6 +8,32 @@ export const MODE_TYPE = {
   simulation: 'simulation',
 };
 
+export const CHESS_PIECE_TYPE = {
+  queen: {
+    value: 'queen',
+    icon: '♕',
+  },
+  bishop: {
+    value: 'bishop',
+    icon: '♗',
+  },
+  rock: {
+    value: 'rock',
+    icon: '♖',
+  },
+  knight: {
+    value: 'knight',
+    icon: '♘',
+  },
+};
+export const chessPieceTypeControlBarConfig = {
+  id: 'chessPieceType',
+  options: {
+    ...CHESS_PIECE_TYPE,
+  },
+  label: 'Chess Piece Type',
+};
+
 export const simulationSpeedControlBarConfig = {
   id: 'simulationSpeed',
   options: {

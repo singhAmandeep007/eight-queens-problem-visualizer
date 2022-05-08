@@ -10,18 +10,21 @@ import {
   simulationSpeedControlBarConfig,
   boardSizeControlBarConfig,
   modeControlBarConfig,
+  chessPieceTypeControlBarConfig,
   MODE_TYPE,
 } from './../../constants';
 
-import ControlContext from '../../contexts';
+import { ControlContext } from '../../contexts';
 
 const ControlBar = () => {
   const {
     simulationSpeed,
     handleSimulationSpeedChange,
     boardSize,
+    handleChessPieceTypeChange,
     handleBoardSizeChange,
     mode,
+    chessPieceType,
     handleModeChange,
     isSimulating,
     toggleSimulation,
@@ -29,6 +32,18 @@ const ControlBar = () => {
 
   return (
     <Container>
+      <ControlSelect
+        {...chessPieceTypeControlBarConfig}
+        options={Object.entries(chessPieceTypeControlBarConfig.options).reduce(
+          (acc, [key, optionValue]) => {
+            return { ...acc, [optionValue.value]: optionValue.value };
+          },
+          {}
+        )}
+        value={chessPieceType.value}
+        handleChange={handleChessPieceTypeChange}
+        isDisabled={isSimulating ? true : false}
+      />
       <ControlSelect
         {...modeControlBarConfig}
         value={mode}

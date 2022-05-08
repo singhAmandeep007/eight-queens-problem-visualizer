@@ -3,14 +3,16 @@ import styled from 'styled-components';
 import Chessboard from '../Chessboard';
 import ControlBar from '../ControlBar';
 
-import { ControlContextProvider } from '../../contexts';
+import { ControlContextProvider, AlertContextProvider } from '../../contexts';
 
 const Dashboard = () => {
   return (
     <Container>
       <ControlContextProvider>
         <ControlBar />
-        <Chessboard />
+        <AlertContextProvider>
+          <Chessboard />
+        </AlertContextProvider>
       </ControlContextProvider>
     </Container>
   );

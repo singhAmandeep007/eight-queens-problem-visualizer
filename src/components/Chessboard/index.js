@@ -1,15 +1,9 @@
-import React, {
-  useContext,
-  useState,
-  useEffect,
-  useCallback,
-  useMemo,
-  useRef,
-} from 'react';
+import React, { useContext, useState, useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
-import ControlContext from '../../contexts';
+import { ControlContext, AlertContext } from '../../contexts';
 import Square from '../Square';
+import Alert from '../Alert';
 import { checkIsSolved, checkIsAttacking, MODE_TYPE } from '../../constants';
 import { delay } from '../../utils';
 import Button from '../../common/button';
@@ -34,8 +28,16 @@ const memoizedCheckIsSolved = (() => {
 })();
 
 const Chessboard = () => {
-  let { boardSize, mode, isSimulating, toggleSimulation, simulationSpeed } =
-    useContext(ControlContext);
+  let {
+    boardSize,
+    mode,
+    chessPieceType,
+    isSimulating,
+    toggleSimulation,
+    simulationSpeed,
+  } = useContext(ControlContext);
+  let { alert, showAlertMessage } = useContext(AlertContext);
+
   boardSize = Number(boardSize);
 
   const cancelSimulation = useRef(false);
@@ -49,7 +51,7 @@ const Chessboard = () => {
 
   const [isReset, setIsReset] = useState(false);
 
-  const memoizedStartSimulation = function () {
+  const startSimulation = function () {
     function getAllSolutions(rows, columns) {
       return new Promise(async function (resolve, reject) {
         if (rows <= 0) {
@@ -136,7 +138,11 @@ const Chessboard = () => {
         toggleSimulation();
       })
       .catch(function (error) {
-        console.log(error);
+        //console.log(error);
+        showAlertMessage({
+          message: `${error}`,
+          variant: 'warning',
+        });
         cancelSimulation.current = false;
         resetAllState();
       });
@@ -196,7 +202,7 @@ const Chessboard = () => {
     function () {
       if (!isInitialRender.current) {
         if (isSimulating && isReset) {
-          memoizedStartSimulation();
+          startSimulation();
         }
       }
     },
@@ -283,10 +289,13 @@ const Chessboard = () => {
               <Square
                 key={key}
                 isOdd={x % 2 === y % 2} // true -> white | black
-                updateQueenPosition={handleUpdateQueenPosition}
+                updatePosition={handleUpdateQueenPosition}
                 position={y * 10 + x}
-                queenPositions={queenPositions}
-                isQueenPlaced={queenPositions.includes(Number(y + '' + x))}
+                positions={queenPositions}
+                isPlaced={queenPositions.includes(Number(y + '' + x))}
+                chessPieceType={chessPieceType}
+                boardSize={boardSize}
+                showAlertMessage={showAlertMessage}
               />
             );
           })}
@@ -317,6 +326,8 @@ const Chessboard = () => {
           })}
         </ul>
       </SolutionsList>
+
+      {alert.message && <Alert variant={alert.variant}>{alert.message}</Alert>}
     </Container>
   );
 };
