@@ -1,3 +1,30 @@
+# ⚡ The 8 Queens Problem Visualizer
+
+👑 Given a n X n chessboard. The task is to place n queens on the board, such that no two queens attack each other. We need to find distinct possible solutions for this problem.
+
+👑 By using "backtracking" - an algorithmus or set of clear defined instructions we can find all solutions systematically.
+
+👑 It’s a great little puzzle because it’s not too hard to solve manually, and it’s a fun programming exercise to write code to enumerate all the solutions.
+
+Try yourself !
+👑 You can select the type of chess piece you want to play with :- ( ♕ Queen, ♗ Bishop, ♖ Rock, ♘ Knight ).
+
+👑 You can select manual mode or simulation mode.
+
+👑 You can select simulation speed and board size also.
+
+👑 By clicking the any solution in the solutions list the board will reset to represent the solution visually.
+
+👑 Select the manual mode to and try to find as many possible solutions that are distinct.
+
+# ⚡ Technologies
+
+[![react](https://aleen42.github.io/badges/src/react.svg)](https://aleen42.github.io/badges/src/react.svg)
+<img alt="styled-components" src="https://raw.githubusercontent.com/styled-components/brand/master/styled-components.png" height="20px" width="20px" />
+[![javascript](https://aleen42.github.io/badges/src/javascript.svg)](https://aleen42.github.io/badges/src/javascript.svg)
+![HTML5](https://img.shields.io/badge/-HTML5-E34F26?style=flat-square&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/-CSS3-1572B6?style=flat-square&logo=css3)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

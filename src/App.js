@@ -72,11 +72,40 @@ function App() {
           <Dashboard />
         </Container>
       </main>
+      <Footer>
+        <p>
+          Developed by{' '}
+          <a href="https://amandeep-singh.web.app/" target="_blank">
+            Amandeep Singh
+          </a>
+          ©2022
+        </p>
+      </Footer>
     </ErrorBoundary>
   );
 }
 
 export default App;
+
+const Footer = styled.div`
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: var(--clr-primary-background);
+  color: white;
+  text-align: center;
+  font-size: 2.5rem;
+  padding: 1rem;
+
+  p {
+    font-size: 70%;
+    color: var(--clr-dark);
+    a {
+      color: var(--clr-secondary);
+    }
+  }
+`;
 
 const Container = styled.div`
   display: grid;
