@@ -74,17 +74,67 @@ export const breakpoints = {
   bpXSmall: '23.4375em', // 375px
 };
 
-export const checkIsSolved = (positions) => {
+export const checkConflictMethods = {
+  getRowAndColumn: function (position) {
+    let r = Math.trunc(position / 10);
+    let c = position % 10;
+    return { r, c };
+  },
+  sameRowOrColumn: function ({ r1, c1, r2, c2 }) {
+    return r1 === r2 || c1 === c2;
+  },
+  sameDiagonal: function ({ r1, c1, r2, c2 }) {
+    return Math.abs(c1 - c2) === Math.abs(r1 - r2);
+  },
+  queen: function ({ r1, c1, r2, c2 }) {
+    return (
+      this.sameRowOrColumn({ r1, c1, r2, c2 }) ||
+      this.sameDiagonal({ r1, c1, r2, c2 })
+    );
+  },
+  bishop: function ({ r1, c1, r2, c2 }) {
+    return this.sameDiagonal({ r1, c1, r2, c2 });
+  },
+  rock: function ({ r1, c1, r2, c2 }) {
+    return this.sameRowOrColumn({ r1, c1, r2, c2 });
+  },
+  knight: function ({ r1, c1, r2, c2 }) {
+    return (
+      (Math.abs(c1 - c2) === 1 && Math.abs(r1 - r2) === 2) ||
+      (Math.abs(c1 - c2) === 2 && Math.abs(r1 - r2) === 1)
+    );
+  },
+};
+
+export const checkIsSolved = (chessPieceType, positions) => {
   let isNotAttacking = true;
   for (let i = 0; i < positions.length - 1; i++) {
     for (let j = i + 1; j < positions.length; j++) {
-      let ax = positions[i] % 10;
-      let ay = Math.trunc(positions[i] / 10);
-      let bx = positions[j] % 10;
-      let by = Math.trunc(positions[j] / 10);
-      if (ax === bx || ay === by || Math.abs(ax - bx) === Math.abs(ay - by)) {
-        isNotAttacking = false;
-        break;
+      let { r: r1, c: c1 } = checkConflictMethods.getRowAndColumn(positions[i]);
+      let { r: r2, c: c2 } = checkConflictMethods.getRowAndColumn(positions[j]);
+      if (chessPieceType === CHESS_PIECE_TYPE.queen.value) {
+        if (checkConflictMethods.queen({ r1, r2, c1, c2 })) {
+          isNotAttacking = false;
+          break;
+        }
+      }
+      if (chessPieceType === CHESS_PIECE_TYPE.bishop.value) {
+        if (checkConflictMethods.bishop({ r1, r2, c1, c2 })) {
+          isNotAttacking = false;
+          break;
+        }
+      }
+      if (chessPieceType === CHESS_PIECE_TYPE.rock.value) {
+        if (checkConflictMethods.rock({ r1, r2, c1, c2 })) {
+          isNotAttacking = false;
+          break;
+        }
+      }
+      if (chessPieceType === CHESS_PIECE_TYPE.knight.value) {
+        if (checkConflictMethods.knight({ r1, r2, c1, c2 })) {
+          isNotAttacking = false;
+          break;
+        }
       }
     }
     if (!isNotAttacking) break;
@@ -92,16 +142,41 @@ export const checkIsSolved = (positions) => {
   return isNotAttacking;
 };
 
-export const checkIsAttacking = (position, existingPositions) => {
+export const checkIsAttacking = (
+  chessPieceType,
+  position,
+  existingPositions
+) => {
   let isAttacking = false;
   for (let i = 0; i < existingPositions.length; i++) {
-    let ax = position % 10;
-    let ay = Math.trunc(position / 10);
-    let bx = existingPositions[i] % 10;
-    let by = Math.trunc(existingPositions[i] / 10);
-    if (ax === bx || ay === by || Math.abs(ax - bx) === Math.abs(ay - by)) {
-      isAttacking = true;
-      break;
+    let { r: r1, c: c1 } = checkConflictMethods.getRowAndColumn(position);
+    let { r: r2, c: c2 } = checkConflictMethods.getRowAndColumn(
+      existingPositions[i]
+    );
+
+    if (chessPieceType === CHESS_PIECE_TYPE.queen.value) {
+      if (checkConflictMethods.queen({ r1, r2, c1, c2 })) {
+        isAttacking = true;
+        break;
+      }
+    }
+    if (chessPieceType === CHESS_PIECE_TYPE.bishop.value) {
+      if (checkConflictMethods.bishop({ r1, r2, c1, c2 })) {
+        isAttacking = true;
+        break;
+      }
+    }
+    if (chessPieceType === CHESS_PIECE_TYPE.rock.value) {
+      if (checkConflictMethods.rock({ r1, r2, c1, c2 })) {
+        isAttacking = true;
+        break;
+      }
+    }
+    if (chessPieceType === CHESS_PIECE_TYPE.knight.value) {
+      if (checkConflictMethods.knight({ r1, r2, c1, c2 })) {
+        isAttacking = true;
+        break;
+      }
     }
   }
   return isAttacking;

@@ -13,15 +13,15 @@ import celebration1 from '../../assets/celebration1.gif';
 const memoizedCheckIsSolved = (() => {
   const cache = {};
 
-  return (positions) => {
+  return (chessPieceType, positions) => {
     if (positions.length === 0) {
       return false;
     }
-    let key = positions.sort((a, b) => a - b).join('');
+    let key = chessPieceType + positions.sort((a, b) => a - b).join('');
     if (cache.hasOwnProperty(key)) {
       return cache[key];
     } else {
-      cache[key] = checkIsSolved(positions);
+      cache[key] = checkIsSolved(chessPieceType, positions);
       return cache[key];
     }
   };
@@ -93,7 +93,9 @@ const Chessboard = () => {
                 ];
                 setQueenPositions(newQueenPositions);
 
-                if (!checkIsAttacking(position, solution)) {
+                if (
+                  !checkIsAttacking(chessPieceType.value, position, solution)
+                ) {
                   let result = solution.concat([position]);
                   newSolutions.push(result);
 
@@ -138,9 +140,9 @@ const Chessboard = () => {
         toggleSimulation();
       })
       .catch(function (error) {
-        //console.log(error);
+        //console.log(error, typeof error, error.message);
         showAlertMessage({
-          message: `${error}`,
+          message: `${error.message}`,
           variant: 'warning',
         });
         cancelSimulation.current = false;
@@ -154,25 +156,27 @@ const Chessboard = () => {
         resetAllState();
       }
     },
-    [boardSize, mode]
+    [boardSize, mode, chessPieceType.value]
   );
 
   useEffect(() => {
-    function onVisibilityChange() {
-      if (isSimulating) {
-        console.log('called', document.visibilityState);
-        if (document.visibilityState !== 'visible') {
-          toggleSimulation();
+    if (isSimulating) {
+      function onVisibilityChange() {
+        if (isSimulating) {
+          console.log(document.visibilityState);
+          if (document.visibilityState !== 'visible') {
+            toggleSimulation();
+          }
         }
       }
+
+      document.addEventListener('visibilitychange', onVisibilityChange);
+
+      return function () {
+        document.removeEventListener('visibilitychange', onVisibilityChange);
+      };
     }
-
-    document.addEventListener('visibilitychange', onVisibilityChange);
-
-    return function () {
-      document.removeEventListener('visibilitychange', onVisibilityChange);
-    };
-  }, [toggleSimulation]);
+  }, [toggleSimulation, isSimulating]);
 
   useEffect(
     function () {
@@ -232,7 +236,10 @@ const Chessboard = () => {
     } else {
       positions = [...new Set([...queenPositions, position])];
     }
-    let checkIsProblemSolved = memoizedCheckIsSolved(positions);
+    let checkIsProblemSolved = memoizedCheckIsSolved(
+      chessPieceType.value,
+      positions
+    );
 
     if (checkIsProblemSolved && positions.length === boardSize) {
       setQueenPositions(positions);

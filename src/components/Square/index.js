@@ -24,7 +24,7 @@ const Square = ({
     }
   };
 
-  let isAttacking = checkIsAttacking(position, positions);
+  let isAttacking = checkIsAttacking(chessPieceType.value, position, positions);
   let className = `${isOdd ? 'white' : 'black'} ${
     isAttacking ? 'occupied' : ''
   }`;

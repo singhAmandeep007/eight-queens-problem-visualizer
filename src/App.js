@@ -46,8 +46,12 @@ function App() {
               </p>
               <h4>Try yourself !</h4>
               <p>
+                👑 You can select the <strong>type of chess piece </strong>you
+                want to play with :- ( ♕ Queen, ♗ Bishop, ♖ Rock, ♘ Knight ).
+              </p>
+              <p>
                 👑 You can select{' '}
-                <strong>manual mode or simulation mode</strong>.{' '}
+                <strong>manual mode or simulation mode.</strong>{' '}
               </p>
               <p>
                 👑 You can select{' '}
@@ -60,9 +64,8 @@ function App() {
               <p>
                 👑 Select the manual mode to and{' '}
                 <strong>
-                  try to find as many possible solutions that are distinct
+                  try to find as many possible solutions that are distinct.
                 </strong>
-                .
               </p>
             </Modal>
           )}
