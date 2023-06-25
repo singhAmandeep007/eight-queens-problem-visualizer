@@ -70,17 +70,21 @@ function App() {
             </Modal>
           )}
           <Dashboard />
+          <Footer>
+            <p>
+              Developed by{' '}
+              <a
+                href="https://amandeep-singh.web.app/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Amandeep Singh
+              </a>
+              ©2022
+            </p>
+          </Footer>
         </Container>
       </main>
-      <Footer>
-        <p>
-          Developed by{' '}
-          <a href="https://amandeep-singh.web.app/" target="_blank">
-            Amandeep Singh
-          </a>
-          ©2022
-        </p>
-      </Footer>
     </ErrorBoundary>
   );
 }
@@ -88,7 +92,7 @@ function App() {
 export default App;
 
 const Footer = styled.div`
-  position: fixed;
+  position: relative;
   left: 0;
   bottom: 0;
   width: 100%;
@@ -97,7 +101,7 @@ const Footer = styled.div`
   text-align: center;
   font-size: 2.5rem;
   padding: 1rem;
-
+  margin-top: 3.5rem;
   p {
     font-size: 70%;
     color: var(--clr-dark);
