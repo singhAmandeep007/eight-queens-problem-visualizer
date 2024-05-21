@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.js": "/eight-queens-problem-visualizer/static/js/main.e360017f.js",
-    "static/js/787.44bd223f.chunk.js": "/eight-queens-problem-visualizer/static/js/787.44bd223f.chunk.js",
-    "static/media/celebration1.gif": "/eight-queens-problem-visualizer/static/media/celebration1.884f304b3257ce7ab21d.gif",
-    "static/media/cross.svg": "/eight-queens-problem-visualizer/static/media/cross.e853083d316e5f25e7f4903e8c6ec65b.svg",
-    "index.html": "/eight-queens-problem-visualizer/index.html",
-    "static/media/stop.svg": "/eight-queens-problem-visualizer/static/media/stop.b954e74506a80c9018a0c323bb0b65e6.svg",
-    "static/media/info.svg": "/eight-queens-problem-visualizer/static/media/info.7aea926771f627cfeab01dfda9007557.svg",
-    "static/media/play.svg": "/eight-queens-problem-visualizer/static/media/play.850c03b64674f635de19c6e0c8122935.svg",
-    "main.e360017f.js.map": "/eight-queens-problem-visualizer/static/js/main.e360017f.js.map",
-    "787.44bd223f.chunk.js.map": "/eight-queens-problem-visualizer/static/js/787.44bd223f.chunk.js.map"
+    "main.js": "./static/js/main.5c898d3f.js",
+    "static/js/787.44bd223f.chunk.js": "./static/js/787.44bd223f.chunk.js",
+    "static/media/celebration1.gif": "./static/media/celebration1.884f304b3257ce7ab21d.gif",
+    "static/media/cross.svg": "./static/media/cross.e853083d316e5f25e7f4903e8c6ec65b.svg",
+    "index.html": "./index.html",
+    "static/media/stop.svg": "./static/media/stop.b954e74506a80c9018a0c323bb0b65e6.svg",
+    "static/media/info.svg": "./static/media/info.7aea926771f627cfeab01dfda9007557.svg",
+    "static/media/play.svg": "./static/media/play.850c03b64674f635de19c6e0c8122935.svg",
+    "main.5c898d3f.js.map": "./static/js/main.5c898d3f.js.map",
+    "787.44bd223f.chunk.js.map": "./static/js/787.44bd223f.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.e360017f.js"
+    "static/js/main.5c898d3f.js"
   ]
 }
