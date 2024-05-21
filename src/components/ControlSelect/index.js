@@ -1,17 +1,13 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-const ControlSelect = ({
-  id,
-  options,
-  label,
-  value,
-  handleChange,
-  isDisabled,
-}) => {
+const ControlSelect = ({ id, options, label, value, handleChange, isDisabled }) => {
   return (
     <ControlContainer>
-      <ControlLabel $disabled={isDisabled} htmlFor={id}>
+      <ControlLabel
+        $disabled={isDisabled}
+        htmlFor={id}
+      >
         {label}
       </ControlLabel>
       <SelectContainer $disabled={isDisabled}>
@@ -24,7 +20,10 @@ const ControlSelect = ({
           disabled={isDisabled}
         >
           {Object.entries(options).map(([key, value], i) => (
-            <option key={key + value + i} value={value}>
+            <option
+              key={key + value + i}
+              value={value}
+            >
               {key}
             </option>
           ))}
@@ -46,7 +45,7 @@ const ControlLabel = styled.label`
   margin-bottom: 0.5rem;
   font-weight: 300;
 
-  opacity: ${(props) => (props.$disabled ? '0.5' : '1')};
+  opacity: ${(props) => (props.$disabled ? "0.5" : "1")};
   @media (max-width: 1000px) {
     font-size: 1.5rem;
   }
@@ -65,13 +64,10 @@ const SelectContainer = styled.div`
 
   padding: 0.8rem 0;
 
-  opacity: ${(props) => (props.$disabled ? '0.5' : '1')};
-  @media (max-width: 1000px) {
-    width: min(20rem, 100px);
-  }
+  opacity: ${(props) => (props.$disabled ? "0.5" : "1")};
 
   &:after {
-    content: '🔽';
+    content: "🔽";
     position: absolute;
     right: 0px;
     bottom: 0;

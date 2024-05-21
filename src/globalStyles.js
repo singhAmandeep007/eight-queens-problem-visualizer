@@ -1,5 +1,5 @@
-import { createGlobalStyle } from 'styled-components';
-import { breakpoints } from './constants';
+import { createGlobalStyle } from "styled-components";
+import { breakpoints } from "./constants";
 
 //https://piccalil.li/blog/a-modern-css-reset/
 export default createGlobalStyle`
@@ -102,11 +102,9 @@ code {
 }
 
 html {
-
 	@media only screen and (min-width: ${breakpoints.bpXXLarge}) {
 			font-size: 75% !important; // 12px
 	}
-
 	@media only screen and (max-width: ${breakpoints.bpXXLarge}) {
 		font-size:  62.5%  !important; // 10px
 	}

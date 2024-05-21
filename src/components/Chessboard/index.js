@@ -1,14 +1,14 @@
-import React, { useContext, useState, useEffect, useMemo, useRef } from 'react';
-import styled from 'styled-components';
-import { v4 as uuidv4 } from 'uuid';
-import { ControlContext, AlertContext } from '../../contexts';
-import Square from '../Square';
-import Alert from '../Alert';
-import { checkIsSolved, checkIsAttacking, MODE_TYPE } from '../../constants';
-import { delay } from '../../utils';
-import Button from '../../common/button';
+import React, { useContext, useState, useEffect, useMemo, useRef } from "react";
+import styled from "styled-components";
+import { v4 as uuidv4 } from "uuid";
+import { ControlContext, AlertContext } from "../../contexts";
+import Square from "../Square";
+import Alert from "../Alert";
+import { checkIsSolved, checkIsAttacking, MODE_TYPE } from "../../constants";
+import { delay } from "../../utils";
+import Button from "../../common/button";
 
-import celebration1 from '../../assets/celebration1.gif';
+import celebration1 from "../../assets/celebration1.gif";
 
 const memoizedCheckIsSolved = (() => {
   const cache = {};
@@ -17,7 +17,7 @@ const memoizedCheckIsSolved = (() => {
     if (positions.length === 0) {
       return false;
     }
-    let key = chessPieceType + positions.sort((a, b) => a - b).join('');
+    let key = chessPieceType + positions.sort((a, b) => a - b).join("");
     if (cache.hasOwnProperty(key)) {
       return cache[key];
     } else {
@@ -28,14 +28,7 @@ const memoizedCheckIsSolved = (() => {
 })();
 
 const Chessboard = () => {
-  let {
-    boardSize,
-    mode,
-    chessPieceType,
-    isSimulating,
-    toggleSimulation,
-    simulationSpeed,
-  } = useContext(ControlContext);
+  let { boardSize, mode, chessPieceType, isSimulating, toggleSimulation, simulationSpeed } = useContext(ControlContext);
   let { alert, showAlertMessage } = useContext(AlertContext);
 
   boardSize = Number(boardSize);
@@ -86,29 +79,16 @@ const Chessboard = () => {
                 }
                 let position = (rows + 1) * 10 + (column + 1);
                 //console.log('position-------->', position);
-                let newQueenPositions = [
-                  ...queenPositions,
-                  ...solution,
-                  position,
-                ];
+                let newQueenPositions = [...queenPositions, ...solution, position];
                 setQueenPositions(newQueenPositions);
 
-                if (
-                  !checkIsAttacking(chessPieceType.value, position, solution)
-                ) {
+                if (!checkIsAttacking(chessPieceType.value, position, solution)) {
                   let result = solution.concat([position]);
                   newSolutions.push(result);
 
                   if (result.length === columns) {
                     setSolutions((prevState) => {
-                      return Array.from(
-                        new Map(
-                          [...[...prevState], [...result]].map((s) => [
-                            s.join(),
-                            s,
-                          ])
-                        ).values()
-                      );
+                      return Array.from(new Map([...[...prevState], [...result]].map((s) => [s.join(), s])).values());
                     });
                   }
                 }
@@ -117,7 +97,7 @@ const Chessboard = () => {
               }
             }
             if (cancelSimulation.current) {
-              throw new Error('Simulation Stopped');
+              throw new Error("Simulation Stopped");
             } else {
               resolve([...newSolutions]);
             }
@@ -143,7 +123,7 @@ const Chessboard = () => {
         //console.log(error, typeof error, error.message);
         showAlertMessage({
           message: `${error.message}`,
-          variant: 'warning',
+          variant: "warning",
         });
         cancelSimulation.current = false;
         resetAllState();
@@ -164,16 +144,16 @@ const Chessboard = () => {
       function onVisibilityChange() {
         if (isSimulating) {
           console.log(document.visibilityState);
-          if (document.visibilityState !== 'visible') {
+          if (document.visibilityState !== "visible") {
             toggleSimulation();
           }
         }
       }
 
-      document.addEventListener('visibilitychange', onVisibilityChange);
+      document.addEventListener("visibilitychange", onVisibilityChange);
 
       return function () {
-        document.removeEventListener('visibilitychange', onVisibilityChange);
+        document.removeEventListener("visibilitychange", onVisibilityChange);
       };
     }
   }, [toggleSimulation, isSimulating]);
@@ -186,11 +166,7 @@ const Chessboard = () => {
           resetAllState();
         }
 
-        if (
-          !isSimulating &&
-          !cancelSimulation.current &&
-          !isAutomaticallyStopped.current
-        ) {
+        if (!isSimulating && !cancelSimulation.current && !isAutomaticallyStopped.current) {
           cancelSimulation.current = true;
         }
 
@@ -210,6 +186,7 @@ const Chessboard = () => {
         }
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [isReset, isSimulating]
   );
 
@@ -236,21 +213,12 @@ const Chessboard = () => {
     } else {
       positions = [...new Set([...queenPositions, position])];
     }
-    let checkIsProblemSolved = memoizedCheckIsSolved(
-      chessPieceType.value,
-      positions
-    );
+    let checkIsProblemSolved = memoizedCheckIsSolved(chessPieceType.value, positions);
 
     if (checkIsProblemSolved && positions.length === boardSize) {
       setQueenPositions(positions);
       setIsSolved(true);
-      setSolutions(
-        Array.from(
-          new Map(
-            [...solutions, [...positions]].map((s) => [s.join(), s])
-          ).values()
-        )
-      );
+      setSolutions(Array.from(new Map([...solutions, [...positions]].map((s) => [s.join(), s])).values()));
     } else {
       setQueenPositions(positions);
       setIsSolved(false);
@@ -283,12 +251,7 @@ const Chessboard = () => {
     <Container $boardSize={boardSize}>
       <ChessBoardContainer>
         <ChessBoard
-          $isDisabled={
-            isSolved ||
-            isPreview ||
-            isSimulating ||
-            mode === MODE_TYPE.simulation
-          }
+          $isDisabled={isSolved || isPreview || isSimulating || mode === MODE_TYPE.simulation}
           $boardSize={boardSize}
         >
           {sizeArr.map(([x, y, key]) => {
@@ -299,7 +262,7 @@ const Chessboard = () => {
                 updatePosition={handleUpdateQueenPosition}
                 position={y * 10 + x}
                 positions={queenPositions}
-                isPlaced={queenPositions.includes(Number(y + '' + x))}
+                isPlaced={queenPositions.includes(Number(y + "" + x))}
                 chessPieceType={chessPieceType}
                 boardSize={boardSize}
                 showAlertMessage={showAlertMessage}
@@ -310,11 +273,14 @@ const Chessboard = () => {
 
         <CelebarationEl $boardSize={boardSize}>
           {(isSolved || isPreview) && mode !== MODE_TYPE.simulation && (
-            <StyledButton onClick={handleResetChessBoard}>
-              Play Again
-            </StyledButton>
+            <StyledButton onClick={handleResetChessBoard}>Play Again</StyledButton>
           )}
-          {isSolved && <img src={celebration1} alt="celebration" />}
+          {isSolved && (
+            <img
+              src={celebration1}
+              alt="celebration"
+            />
+          )}
         </CelebarationEl>
       </ChessBoardContainer>
       <SolutionsList>
@@ -324,10 +290,10 @@ const Chessboard = () => {
             return (
               <li
                 data-solution-key={i}
-                key={s.join(',')}
+                key={s.join(",")}
                 onClick={handleListClick}
               >
-                {s.join(',')}
+                {s.join(",")}
               </li>
             );
           })}
@@ -353,8 +319,7 @@ const Container = styled.div`
 
   @media (max-width: 1000px) {
     grid-template-columns: max-content;
-    grid-template-rows: ${({ $boardSize }) =>
-      `repeat(2,calc( ${$boardSize} * 8rem))`};
+    grid-template-rows: ${({ $boardSize }) => `repeat(2,calc( ${$boardSize} * 8rem))`};
   }
 `;
 
@@ -409,13 +374,12 @@ const SolutionsList = styled.div`
 
 const ChessBoard = styled.div`
   display: grid;
-  grid-template-columns: ${({ $boardSize }) =>
-    `repeat( ${$boardSize} , 1fr );`};
+  grid-template-columns: ${({ $boardSize }) => `repeat( ${$boardSize} , 1fr );`};
 
   overflow: hidden;
   outline: 2px solid var(--clr-dark);
 
-  pointer-events: ${({ $isDisabled }) => ($isDisabled ? 'none' : 'all')};
+  pointer-events: ${({ $isDisabled }) => ($isDisabled ? "none" : "all")};
 `;
 
 const CelebarationEl = styled.div`

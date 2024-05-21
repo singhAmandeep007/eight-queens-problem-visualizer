@@ -1,20 +1,20 @@
-import React, { useContext } from 'react';
-import styled from 'styled-components';
-import Button from '../../common/button';
+import React, { useContext } from "react";
+import styled from "styled-components";
+import Button from "../../common/button";
 
-import { ReactComponent as StopSvg } from './../../assets/stop.svg';
-import { ReactComponent as PlaySvg } from './../../assets/play.svg';
+import { ReactComponent as StopSvg } from "./../../assets/stop.svg";
+import { ReactComponent as PlaySvg } from "./../../assets/play.svg";
 
-import ControlSelect from '../ControlSelect';
+import ControlSelect from "../ControlSelect";
 import {
   simulationSpeedControlBarConfig,
   boardSizeControlBarConfig,
   modeControlBarConfig,
   chessPieceTypeControlBarConfig,
   MODE_TYPE,
-} from './../../constants';
+} from "./../../constants";
 
-import { ControlContext } from '../../contexts';
+import { ControlContext } from "../../contexts";
 
 const ControlBar = () => {
   const {
@@ -34,12 +34,9 @@ const ControlBar = () => {
     <Container>
       <ControlSelect
         {...chessPieceTypeControlBarConfig}
-        options={Object.entries(chessPieceTypeControlBarConfig.options).reduce(
-          (acc, [key, optionValue]) => {
-            return { ...acc, [optionValue.value]: optionValue.value };
-          },
-          {}
-        )}
+        options={Object.entries(chessPieceTypeControlBarConfig.options).reduce((acc, [key, optionValue]) => {
+          return { ...acc, [optionValue.value]: optionValue.value };
+        }, {})}
         value={chessPieceType.value}
         handleChange={handleChessPieceTypeChange}
         isDisabled={isSimulating ? true : false}
@@ -66,7 +63,7 @@ const ControlBar = () => {
       />
       {mode === MODE_TYPE.simulation && (
         <PlayPauseButton
-          title={isSimulating ? 'click to stop' : 'click to start'}
+          title={isSimulating ? "click to stop" : "click to start"}
           onClick={toggleSimulation}
         >
           {isSimulating ? <StopSvg /> : <PlaySvg />}
@@ -85,14 +82,14 @@ const Container = styled.div`
   position: sticky;
   background-color: var(--clr-primary);
   width: 100%;
-  gap: 5rem;
+  gap: 4rem;
 
   padding: 1rem 0;
 
   border-top: 2px solid var(--clr-secondary);
   border-bottom: 2px solid var(--clr-secondary);
 
-  @media (max-width: 1000px) {
+  @media (max-width: 1200px) {
     gap: 1rem;
     padding-left: 2rem;
     padding-right: 2rem;

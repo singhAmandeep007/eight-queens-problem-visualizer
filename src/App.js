@@ -1,13 +1,13 @@
-import React from 'react';
-import GlobalStyles from './globalStyles';
-import styled from 'styled-components';
-import Dashboard from './components/Dashboard';
-import ErrorBoundary from './components/ErrorBoundary';
-import Modal from './components/Modal';
+import React from "react";
+import GlobalStyles from "./globalStyles";
+import styled from "styled-components";
+import Dashboard from "./components/Dashboard";
+import ErrorBoundary from "./components/ErrorBoundary";
+import Modal from "./components/Modal";
 
-import { useToggle } from './hooks';
+import { useToggle } from "./hooks";
 
-import { ReactComponent as InfoSvg } from './assets/info.svg';
+import { ReactComponent as InfoSvg } from "./assets/info.svg";
 
 function App() {
   const [isModalOpen, onModalOpen, onModalClose] = useToggle();
@@ -18,7 +18,7 @@ function App() {
       <main>
         <Container>
           <Title>
-            {' '}
+            {" "}
             <h1>The 8 Queens Problem Visualizer </h1>
             <InfoSvg onClick={onModalOpen} />
           </Title>
@@ -27,60 +27,51 @@ function App() {
             <Modal onClose={onModalClose}>
               <h2>Understanding The 8 Queens Problem </h2>
               <p>
-                👑 Given a <strong>n X n</strong> chessboard. The task is to{' '}
-                <strong>place n queens</strong> on the board, such that{' '}
-                <strong>no two queens attack each other</strong>. We need to
-                find <strong>distinct</strong> possible solutions for this
-                problem.
+                👑 Given a <strong>n X n</strong> chessboard. The task is to <strong>place n queens</strong> on the
+                board, such that <strong>no two queens attack each other</strong>. We need to find{" "}
+                <strong>distinct</strong> possible solutions for this problem.
               </p>
 
               <p>
-                👑 By using <strong>"backtracking"</strong> - an algorithmus or
-                set of clear defined instructions we can find all solutions
-                systematically.
+                👑 By using <strong>"backtracking"</strong> - an algorithmus or set of clear defined instructions we can
+                find all solutions systematically.
               </p>
               <p>
-                👑 It’s a great little puzzle because it’s not too hard to solve
-                manually, and it’s a fun programming exercise to write code to
-                enumerate all the solutions.
+                👑 It’s a great little puzzle because it’s not too hard to solve manually, and it’s a fun programming
+                exercise to write code to enumerate all the solutions.
               </p>
               <h4>Try yourself !</h4>
               <p>
-                👑 You can select the <strong>type of chess piece </strong>you
-                want to play with :- ( ♕ Queen, ♗ Bishop, ♖ Rock, ♘ Knight ).
+                👑 You can select the <strong>type of chess piece </strong>you want to play with :- ( ♕ Queen, ♗ Bishop,
+                ♖ Rock, ♘ Knight ).
               </p>
               <p>
-                👑 You can select{' '}
-                <strong>manual mode or simulation mode.</strong>{' '}
+                👑 You can select <strong>manual mode or simulation mode.</strong>{" "}
               </p>
               <p>
-                👑 You can select{' '}
-                <strong>simulation speed and board size</strong> also.{' '}
+                👑 You can select <strong>simulation speed and board size</strong> also.{" "}
               </p>
               <p>
-                👑 By clicking the any solution in the solutions list the board
-                will reset to represent the solution visually.{' '}
+                👑 By clicking the any solution in the solutions list the board will reset to represent the solution
+                visually.{" "}
               </p>
               <p>
-                👑 Select the manual mode to and{' '}
-                <strong>
-                  try to find as many possible solutions that are distinct.
-                </strong>
+                👑 Select the manual mode to and{" "}
+                <strong>try to find as many possible solutions that are distinct.</strong>
               </p>
             </Modal>
           )}
           <Dashboard />
           <Footer>
             <p>
-              Developed by{' '}
+              Developed by{" "}
               <a
-                href="https://amandeep-singh.web.app/"
+                href="https://singhamandeep007.github.io/"
                 target="_blank"
                 rel="noreferrer"
               >
                 Amandeep Singh
-              </a>
-              ©2022
+              </a>{" "}
             </p>
           </Footer>
         </Container>

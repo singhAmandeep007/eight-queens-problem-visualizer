@@ -1,9 +1,9 @@
-import React from 'react';
-import styled from 'styled-components';
-import Chessboard from '../Chessboard';
-import ControlBar from '../ControlBar';
+import React from "react";
+import styled from "styled-components";
+import Chessboard from "../Chessboard";
+import ControlBar from "../ControlBar";
 
-import { ControlContextProvider, AlertContextProvider } from '../../contexts';
+import { ControlContextProvider, AlertContextProvider } from "../../contexts";
 
 const Dashboard = () => {
   return (

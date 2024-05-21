@@ -1,19 +1,19 @@
-import React, { createContext, useState, useEffect, useRef } from 'react';
+import React, { createContext, useState, useEffect, useRef } from "react";
 import {
   simulationSpeedControlBarConfig,
   boardSizeControlBarConfig,
   modeControlBarConfig,
   chessPieceTypeControlBarConfig,
-} from './constants';
+} from "./constants";
 
 const control = {
-  simulationSpeed: '',
-  boardSize: '',
+  simulationSpeed: "",
+  boardSize: "",
   isSimulating: false,
-  mode: '',
+  mode: "",
   chessPieceType: {
-    value: '',
-    icon: '',
+    value: "",
+    icon: "",
   },
   handleChessPieceTypeChange: () => {},
   handleModeChange: () => {},
@@ -25,19 +25,11 @@ const control = {
 export const ControlContext = createContext(control);
 
 export const ControlContextProvider = (props) => {
-  const [simulationSpeed, setSimulationSpeed] = useState(
-    Object.values(simulationSpeedControlBarConfig.options)[2]
-  );
-  const [boardSize, setBoardSize] = useState(
-    Object.values(boardSizeControlBarConfig.options)[4]
-  );
-  const [mode, setMode] = useState(
-    Object.values(modeControlBarConfig.options)[0]
-  );
+  const [simulationSpeed, setSimulationSpeed] = useState(Object.values(simulationSpeedControlBarConfig.options)[2]);
+  const [boardSize, setBoardSize] = useState(Object.values(boardSizeControlBarConfig.options)[4]);
+  const [mode, setMode] = useState(Object.values(modeControlBarConfig.options)[0]);
 
-  const [chessPieceType, setChessPieceType] = useState(
-    Object.values(chessPieceTypeControlBarConfig.options)[0]
-  );
+  const [chessPieceType, setChessPieceType] = useState(Object.values(chessPieceTypeControlBarConfig.options)[0]);
 
   const [isSimulating, setIsSimulating] = useState(false);
 
@@ -79,18 +71,18 @@ export const ControlContextProvider = (props) => {
 
 const alertConfig = {
   alert: {
-    message: '',
+    message: "",
     delay: 3,
-    variant: 'info',
+    variant: "info",
   },
   showAlert: () => {},
 };
 
 export const AlertContext = createContext(alertConfig);
 
-export const AlertContextProvider = (props) => {
-  const defaultAlertState = { message: '', delay: 2, variant: 'info' };
+const defaultAlertState = { message: "", delay: 2, variant: "info" };
 
+export const AlertContextProvider = (props) => {
   const [alert, setAlert] = useState({
     ...defaultAlertState,
   });
@@ -114,9 +106,9 @@ export const AlertContextProvider = (props) => {
       clearTimeout(timerId.current);
     }
 
-    let message = 'Something went wrong!',
+    let message = "Something went wrong!",
       delay = 2,
-      variant = 'info';
+      variant = "info";
 
     setAlert({
       variant: props?.variant || variant,
@@ -125,9 +117,5 @@ export const AlertContextProvider = (props) => {
     });
   };
 
-  return (
-    <AlertContext.Provider value={{ alert, showAlertMessage }}>
-      {props.children}
-    </AlertContext.Provider>
-  );
+  return <AlertContext.Provider value={{ alert, showAlertMessage }}>{props.children}</AlertContext.Provider>;
 };

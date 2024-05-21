@@ -1,8 +1,8 @@
-import React from 'react';
-import Portal from './Portal';
-import styled from 'styled-components';
-import Button from './../common/button';
-import { ReactComponent as CrossSvg } from './../assets/cross.svg';
+import React from "react";
+import Portal from "./Portal";
+import styled from "styled-components";
+import Button from "./../common/button";
+import { ReactComponent as CrossSvg } from "./../assets/cross.svg";
 
 export default function Modal({ onClose, children }) {
   return (

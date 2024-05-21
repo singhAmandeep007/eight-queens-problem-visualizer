@@ -1,7 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import { checkIsAttacking } from '../../constants';
+import { checkIsAttacking } from "../../constants";
 
 const Square = ({
   boardSize,
@@ -17,7 +17,7 @@ const Square = ({
     if (!(isPlaced || positions.length < boardSize)) {
       showAlertMessage({
         message: `Cannot place more than ${boardSize} ${chessPieceType.value} `,
-        variant: 'warning',
+        variant: "warning",
       });
     } else {
       updatePosition(isPlaced, position);
@@ -25,9 +25,7 @@ const Square = ({
   };
 
   let isAttacking = checkIsAttacking(chessPieceType.value, position, positions);
-  let className = `${isOdd ? 'white' : 'black'} ${
-    isAttacking ? 'occupied' : ''
-  }`;
+  let className = `${isOdd ? "white" : "black"} ${isAttacking ? "occupied" : ""}`;
 
   return (
     <SquareEl
@@ -36,7 +34,7 @@ const Square = ({
       $chessPieceType={chessPieceType.icon}
     >
       <div className="position">{position}</div>
-      {isPlaced ? <span>{chessPieceType.icon}</span> : ''}
+      {isPlaced ? <span>{chessPieceType.icon}</span> : ""}
     </SquareEl>
   );
 };
@@ -79,7 +77,7 @@ const SquareEl = styled.div`
   }
   &:hover {
     &::before {
-      content: '${({ $chessPieceType }) => $chessPieceType}';
+      content: "${({ $chessPieceType }) => $chessPieceType}";
       position: absolute;
       transform: translate(-50%, -50%);
       top: 50%;
