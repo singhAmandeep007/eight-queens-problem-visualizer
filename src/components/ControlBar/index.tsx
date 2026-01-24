@@ -2,21 +2,22 @@ import React, { useContext } from "react";
 import styled from "styled-components";
 import Button from "../../common/button";
 
-import { ReactComponent as StopSvg } from "./../../assets/stop.svg";
-import { ReactComponent as PlaySvg } from "./../../assets/play.svg";
+import StopSvg from "../../assets/stop.svg?react";
+import PlaySvg from "../../assets/play.svg?react";
 
 import ControlSelect from "../ControlSelect";
 import {
-  simulationSpeedControlBarConfig,
   boardSizeControlBarConfig,
-  modeControlBarConfig,
-  chessPieceTypeControlBarConfig,
   MODE_TYPE,
-} from "./../../constants";
+  modeControlBarConfig,
+  simulationSpeedControlBarConfig,
+  chessPieceTypeControlBarConfig,
+} from "../../constants";
+import type { ChessPiece, ControlMode } from "../../types";
 
 import { ControlContext } from "../../contexts";
 
-const ControlBar = () => {
+const ControlBar: React.FC = () => {
   const {
     simulationSpeed,
     handleSimulationSpeedChange,
@@ -32,35 +33,45 @@ const ControlBar = () => {
 
   return (
     <Container>
-      <ControlSelect
+      <ControlSelect<ChessPiece>
         {...chessPieceTypeControlBarConfig}
-        options={Object.entries(chessPieceTypeControlBarConfig.options).reduce((acc, [key, optionValue]) => {
-          return { ...acc, [optionValue.value]: optionValue.value };
-        }, {})}
+        options={Object.values(chessPieceTypeControlBarConfig.options).reduce<Record<string, ChessPiece>>(
+          (acc, optionValue) => {
+            return { ...acc, [optionValue.value]: optionValue.value };
+          },
+          {}
+        )}
         value={chessPieceType.value}
         handleChange={handleChessPieceTypeChange}
-        isDisabled={isSimulating ? true : false}
+        isDisabled={isSimulating}
       />
-      <ControlSelect
+
+      <ControlSelect<ControlMode>
         {...modeControlBarConfig}
+        options={modeControlBarConfig.options as Record<string, ControlMode>}
         value={mode}
         handleChange={handleModeChange}
-        isDisabled={isSimulating ? true : false}
+        isDisabled={isSimulating}
       />
+
       {mode === MODE_TYPE.simulation && (
-        <ControlSelect
+        <ControlSelect<number>
           {...simulationSpeedControlBarConfig}
+          options={simulationSpeedControlBarConfig.options as Record<string, number>}
           value={simulationSpeed}
           handleChange={handleSimulationSpeedChange}
-          isDisabled={isSimulating ? true : false}
+          isDisabled={isSimulating}
         />
       )}
-      <ControlSelect
+
+      <ControlSelect<number>
         {...boardSizeControlBarConfig}
+        options={boardSizeControlBarConfig.options as Record<string, number>}
         value={boardSize}
         handleChange={handleBoardSizeChange}
-        isDisabled={isSimulating ? true : false}
+        isDisabled={isSimulating}
       />
+
       {mode === MODE_TYPE.simulation && (
         <PlayPauseButton
           title={isSimulating ? "click to stop" : "click to start"}

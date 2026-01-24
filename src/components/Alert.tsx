@@ -1,8 +1,15 @@
 import React from "react";
 import styled from "styled-components";
 
-const Alert = ({ variant, children }) => {
-  return <AlertWrapper className={`${variant}`}>{children}</AlertWrapper>;
+type AlertVariant = "warning" | "info" | "success" | "error";
+
+interface AlertProps {
+  variant: AlertVariant;
+  children: React.ReactNode;
+}
+
+const Alert = ({ variant, children }: AlertProps) => {
+  return <AlertWrapper className={variant}>{children}</AlertWrapper>;
 };
 
 export default Alert;

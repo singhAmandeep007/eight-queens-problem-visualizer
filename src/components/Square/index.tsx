@@ -2,6 +2,19 @@ import React from "react";
 import styled from "styled-components";
 
 import { checkIsAttacking } from "../../constants";
+import type { ChessPieceTypeValue } from "../../constants";
+import type { ChessPieceTypeOption, ShowAlertArgs } from "../../types";
+
+interface SquareProps {
+  boardSize: number;
+  isOdd: boolean;
+  isPlaced: boolean;
+  positions: number[];
+  position: number;
+  updatePosition: (isQueenPlaced: boolean, position: number) => void;
+  chessPieceType: ChessPieceTypeOption;
+  showAlertMessage: (args?: ShowAlertArgs) => void;
+}
 
 const Square = ({
   boardSize,
@@ -12,11 +25,11 @@ const Square = ({
   updatePosition,
   chessPieceType,
   showAlertMessage,
-}) => {
+}: SquareProps) => {
   const handleClick = () => {
     if (!(isPlaced || positions.length < boardSize)) {
       showAlertMessage({
-        message: `Cannot place more than ${boardSize} ${chessPieceType.value} `,
+        message: `Cannot place more than ${boardSize} ${chessPieceType.value}`,
         variant: "warning",
       });
     } else {
@@ -24,8 +37,8 @@ const Square = ({
     }
   };
 
-  let isAttacking = checkIsAttacking(chessPieceType.value, position, positions);
-  let className = `${isOdd ? "white" : "black"} ${isAttacking ? "occupied" : ""}`;
+  const isAttacking = checkIsAttacking(chessPieceType.value as ChessPieceTypeValue, position, positions);
+  const className = `${isOdd ? "white" : "black"} ${isAttacking ? "occupied" : ""}`;
 
   return (
     <SquareEl
@@ -41,7 +54,7 @@ const Square = ({
 
 export default Square;
 
-const SquareEl = styled.div`
+const SquareEl = styled.div<{ $chessPieceType: string }>`
   position: relative;
   width: 8rem;
   height: 8rem;
@@ -77,7 +90,7 @@ const SquareEl = styled.div`
   }
   &:hover {
     &::before {
-      content: "${({ $chessPieceType }) => $chessPieceType}";
+      content: "${(props) => props.$chessPieceType}";
       position: absolute;
       transform: translate(-50%, -50%);
       top: 50%;

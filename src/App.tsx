@@ -7,7 +7,7 @@ import Modal from "./components/Modal";
 
 import { useToggle } from "./hooks";
 
-import { ReactComponent as InfoSvg } from "./assets/info.svg";
+import InfoSvg from "./assets/info.svg?react";
 
 function App() {
   const [isModalOpen, onModalOpen, onModalClose] = useToggle();

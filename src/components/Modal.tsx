@@ -2,9 +2,14 @@ import React from "react";
 import Portal from "./Portal";
 import styled from "styled-components";
 import Button from "./../common/button";
-import { ReactComponent as CrossSvg } from "./../assets/cross.svg";
+import CrossSvg from "./../assets/cross.svg?react";
 
-export default function Modal({ onClose, children }) {
+interface ModalProps {
+  onClose: () => void;
+  children: React.ReactNode;
+}
+
+export default function Modal({ onClose, children }: ModalProps) {
   return (
     <Portal id="portal">
       <ModalOverlay onClick={onClose}>

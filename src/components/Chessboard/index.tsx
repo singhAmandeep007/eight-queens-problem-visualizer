@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect, useMemo, useRef } from "react";
 import styled from "styled-components";
+import type { ChessPieceTypeValue } from "../../constants";
 import { v4 as uuidv4 } from "uuid";
 import { ControlContext, AlertContext } from "../../contexts";
 import Square from "../Square";
@@ -11,42 +12,48 @@ import Button from "../../common/button";
 import celebration1 from "../../assets/celebration1.gif";
 
 const memoizedCheckIsSolved = (() => {
-  const cache = {};
+  const cache: Record<string, boolean> = {};
 
-  return (chessPieceType, positions) => {
+  return (chessPieceType: ChessPieceTypeValue, positions: number[]) => {
     if (positions.length === 0) {
       return false;
     }
-    let key = chessPieceType + positions.sort((a, b) => a - b).join("");
-    if (cache.hasOwnProperty(key)) {
-      return cache[key];
-    } else {
-      cache[key] = checkIsSolved(chessPieceType, positions);
-      return cache[key];
+    const cacheKey =
+      chessPieceType +
+      positions
+        .slice()
+        .sort((a, b) => a - b)
+        .join("");
+    if (Object.prototype.hasOwnProperty.call(cache, cacheKey)) {
+      return cache[cacheKey];
     }
+    const computed = checkIsSolved(chessPieceType, positions);
+    cache[cacheKey] = computed;
+    return computed;
   };
 })();
 
-const Chessboard = () => {
-  let { boardSize, mode, chessPieceType, isSimulating, toggleSimulation, simulationSpeed } = useContext(ControlContext);
-  let { alert, showAlertMessage } = useContext(AlertContext);
+const Chessboard: React.FC = () => {
+  const { boardSize, mode, chessPieceType, isSimulating, toggleSimulation, simulationSpeed } =
+    useContext(ControlContext);
+  const { alert, showAlertMessage } = useContext(AlertContext);
 
-  boardSize = Number(boardSize);
+  const normalizedBoardSize = Number(boardSize);
 
   const cancelSimulation = useRef(false);
   const isInitialRender = useRef(true);
   const isAutomaticallyStopped = useRef(false);
 
-  const [queenPositions, setQueenPositions] = useState([]);
+  const [queenPositions, setQueenPositions] = useState<number[]>([]);
   const [isSolved, setIsSolved] = useState(false);
   const [isPreview, setIsPreview] = useState(false);
-  const [solutions, setSolutions] = useState([]);
+  const [solutions, setSolutions] = useState<number[][]>([]);
 
   const [isReset, setIsReset] = useState(false);
 
   const startSimulation = function () {
-    function getAllSolutions(rows, columns) {
-      return new Promise(async function (resolve, reject) {
+    function getAllSolutions(rows: number, columns: number): Promise<number[][]> {
+      return new Promise(function (resolve, reject) {
         if (rows <= 0) {
           resolve([[]]);
         } else {
@@ -61,34 +68,32 @@ const Chessboard = () => {
       });
     }
 
-    function getSolution(rows, columns) {
-      return new Promise(async function (resolve, reject) {
-        let newSolutions = [];
+    function getSolution(rows: number, columns: number): Promise<number[][]> {
+      return new Promise(function (resolve, reject) {
+        const newSolutions: number[][] = [];
         getAllSolutions(rows, columns)
           .then(async function (prevSolutions) {
-            for (let i = 0; i < prevSolutions.length; i++) {
+            for (const solution of prevSolutions) {
               if (cancelSimulation.current) {
                 break;
               }
-
-              let solution = prevSolutions[i];
 
               for (let column = 0; column < columns; column++) {
                 if (cancelSimulation.current) {
                   break;
                 }
-                let position = (rows + 1) * 10 + (column + 1);
+                const position = (rows + 1) * 10 + (column + 1);
                 //console.log('position-------->', position);
-                let newQueenPositions = [...queenPositions, ...solution, position];
+                const newQueenPositions = [...queenPositions, ...solution, position];
                 setQueenPositions(newQueenPositions);
 
-                if (!checkIsAttacking(chessPieceType.value, position, solution)) {
-                  let result = solution.concat([position]);
+                if (!checkIsAttacking(chessPieceType.value as ChessPieceTypeValue, position, solution)) {
+                  const result = solution.concat([position]);
                   newSolutions.push(result);
 
                   if (result.length === columns) {
                     setSolutions((prevState) => {
-                      return Array.from(new Map([...[...prevState], [...result]].map((s) => [s.join(), s])).values());
+                      return Array.from(new Map([...prevState, result].map((s) => [s.join(), s])).values());
                     });
                   }
                 }
@@ -108,12 +113,15 @@ const Chessboard = () => {
       });
     }
 
-    getAllSolutions(boardSize, boardSize)
+    getAllSolutions(normalizedBoardSize, normalizedBoardSize)
       .then(function (result) {
         // to prevent running useEffect cb on simulation end
         isAutomaticallyStopped.current = true;
         // set queen positions to last result
-        setQueenPositions([...result[result.length - 1]]);
+        const last = result[result.length - 1];
+        if (last) {
+          setQueenPositions([...last]);
+        }
         // toggle reset state
         setIsReset(false);
         // toggle isSimulating
@@ -136,7 +144,7 @@ const Chessboard = () => {
         resetAllState();
       }
     },
-    [boardSize, mode, chessPieceType.value]
+    [normalizedBoardSize, mode, chessPieceType.value]
   );
 
   useEffect(() => {
@@ -197,25 +205,25 @@ const Chessboard = () => {
   }, []);
 
   const sizeArr = useMemo(() => {
-    let arr = [];
-    for (let i = 1; i <= boardSize; i++) {
-      for (let j = 1; j <= boardSize; j++) {
+    const arr: [number, number, string][] = [];
+    for (let i = 1; i <= normalizedBoardSize; i++) {
+      for (let j = 1; j <= normalizedBoardSize; j++) {
         arr.push([j, i, uuidv4()]);
       }
     }
     return arr;
-  }, [boardSize]);
+  }, [normalizedBoardSize]);
 
-  const handleUpdateQueenPosition = function (isQueenPlaced, position) {
-    let positions;
+  const handleUpdateQueenPosition = function (isQueenPlaced: boolean, position: number) {
+    let positions: number[];
     if (isQueenPlaced) {
       positions = queenPositions.filter((x) => x !== position);
     } else {
       positions = [...new Set([...queenPositions, position])];
     }
-    let checkIsProblemSolved = memoizedCheckIsSolved(chessPieceType.value, positions);
+    const checkIsProblemSolved = memoizedCheckIsSolved(chessPieceType.value as ChessPieceTypeValue, positions);
 
-    if (checkIsProblemSolved && positions.length === boardSize) {
+    if (checkIsProblemSolved && positions.length === normalizedBoardSize) {
       setQueenPositions(positions);
       setIsSolved(true);
       setSolutions(Array.from(new Map([...solutions, [...positions]].map((s) => [s.join(), s])).values()));
@@ -238,21 +246,24 @@ const Chessboard = () => {
     setIsReset(true);
   };
 
-  const handleListClick = function (e) {
-    let { solutionKey = null } = e.target.dataset;
+  const handleListClick = function (e: React.MouseEvent<HTMLLIElement>) {
+    const solutionKey = e.currentTarget.dataset.solutionKey ?? null;
     if (solutionKey !== null) {
-      setQueenPositions([...solutions[solutionKey]]);
+      const idx = Number(solutionKey);
+      const sol = solutions[idx];
+      if (!sol) return;
+      setQueenPositions([...sol]);
       setIsSolved(false);
       setIsPreview(true);
     }
   };
 
   return (
-    <Container $boardSize={boardSize}>
+    <Container $boardSize={normalizedBoardSize}>
       <ChessBoardContainer>
         <ChessBoard
           $isDisabled={isSolved || isPreview || isSimulating || mode === MODE_TYPE.simulation}
-          $boardSize={boardSize}
+          $boardSize={normalizedBoardSize}
         >
           {sizeArr.map(([x, y, key]) => {
             return (
@@ -264,14 +275,14 @@ const Chessboard = () => {
                 positions={queenPositions}
                 isPlaced={queenPositions.includes(Number(y + "" + x))}
                 chessPieceType={chessPieceType}
-                boardSize={boardSize}
+                boardSize={normalizedBoardSize}
                 showAlertMessage={showAlertMessage}
               />
             );
           })}
         </ChessBoard>
 
-        <CelebarationEl $boardSize={boardSize}>
+        <CelebarationEl $boardSize={normalizedBoardSize}>
           {(isSolved || isPreview) && mode !== MODE_TYPE.simulation && (
             <StyledButton onClick={handleResetChessBoard}>Play Again</StyledButton>
           )}
@@ -307,7 +318,7 @@ const Chessboard = () => {
 
 export default Chessboard;
 
-const Container = styled.div`
+const Container = styled.div<{ $boardSize: number }>`
   display: grid;
   grid-template-columns: max-content 1fr;
   grid-template-rows: ${({ $boardSize }) => `calc( ${$boardSize} * 8rem);`};
@@ -372,7 +383,7 @@ const SolutionsList = styled.div`
   }
 `;
 
-const ChessBoard = styled.div`
+const ChessBoard = styled.div<{ $boardSize: number; $isDisabled: boolean }>`
   display: grid;
   grid-template-columns: ${({ $boardSize }) => `repeat( ${$boardSize} , 1fr );`};
 
@@ -382,7 +393,7 @@ const ChessBoard = styled.div`
   pointer-events: ${({ $isDisabled }) => ($isDisabled ? "none" : "all")};
 `;
 
-const CelebarationEl = styled.div`
+const CelebarationEl = styled.div<{ $boardSize: number }>`
   img {
     position: absolute;
     bottom: 0;
