@@ -25,7 +25,7 @@
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css,scss,html,md,json}\" --config ./.prettierrc.cjs",
     "lint": "eslint \"src/**/*.{ts,tsx}\" --report-unused-disable-directives --max-warnings 5",
     "preview": "vite preview",
-    "deploy": "run-s build deploy:gh-pages",
+    "deploy": "GITHUB_PAGES_REPO=eight-queens-problem-visualizer run-s build deploy:gh-pages",
     "deploy:gh-pages": "gh-pages -d dist -- --message \"Updates\""
   },
   "devDependencies": {
