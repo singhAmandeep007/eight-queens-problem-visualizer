@@ -4,11 +4,16 @@ import Chessboard from "../Chessboard";
 import ControlBar from "../ControlBar";
 
 import { ControlContextProvider, AlertContextProvider } from "../../contexts";
+import type { ControlMode } from "../../types";
 
-const Dashboard = () => {
+interface DashboardProps {
+  initialMode?: ControlMode;
+}
+
+const Dashboard = ({ initialMode }: DashboardProps) => {
   return (
     <Container>
-      <ControlContextProvider>
+      <ControlContextProvider initialMode={initialMode}>
         <ControlBar />
         <AlertContextProvider>
           <Chessboard />

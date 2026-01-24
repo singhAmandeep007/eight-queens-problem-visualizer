@@ -37,7 +37,10 @@ export default function ControlSelect<TValue extends OptionValue = string>({
         {label}
       </ControlLabel>
 
-      <SelectContainer $disabled={isDisabled}>
+      <SelectContainer
+        $disabled={isDisabled}
+        aria-disabled={isDisabled}
+      >
         <Select
           id={id}
           name={id}
@@ -64,84 +67,116 @@ export default function ControlSelect<TValue extends OptionValue = string>({
             </option>
           ))}
         </Select>
+
+        <Caret
+          aria-hidden="true"
+          viewBox="0 0 20 20"
+          focusable="false"
+        >
+          <path d="M5.4 7.4a1 1 0 0 1 1.4 0L10 10.6l3.2-3.2a1 1 0 1 1 1.4 1.4l-3.9 3.9a1 1 0 0 1-1.4 0L5.4 8.8a1 1 0 0 1 0-1.4Z" />
+        </Caret>
       </SelectContainer>
     </ControlContainer>
   );
 }
 
 const ControlContainer = styled.div`
-  margin-top: 0.5rem;
+  display: grid;
+  gap: 0.55rem;
 `;
 
 const ControlLabel = styled.label<{ $disabled: boolean }>`
-  color: var(--clr-white);
-  font-size: 2rem;
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 300;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.1px;
 
   opacity: ${(props) => (props.$disabled ? "0.5" : "1")};
-
-  @media (max-width: 1000px) {
-    font-size: 1.5rem;
-  }
 `;
 
 const SelectContainer = styled.div<{ $disabled: boolean }>`
   position: relative;
-  border: 2px solid var(--clr-white);
 
-  background: var(--clr-secondary);
+  width: min(220px, 22rem);
+  height: 44px;
+
+  border-radius: 14px;
   overflow: hidden;
-  border-radius: 5px;
-  margin-bottom: 2rem;
-  margin-top: 1rem;
 
-  width: min(20rem, 200px);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
 
-  padding: 0.8rem 0;
+  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.32);
 
-  opacity: ${(props) => (props.$disabled ? "0.5" : "1")};
+  opacity: ${(props) => (props.$disabled ? "0.55" : "1")};
 
-  &:after {
-    content: "🔽";
-    position: absolute;
-    right: 0px;
-    bottom: 0;
-    top: 50%;
-    transform: translate(-50%, -50%);
+  transition:
+    transform 140ms ease,
+    background 140ms ease,
+    border-color 140ms ease,
+    box-shadow 140ms ease;
 
-    background: var(--clr-secondary);
-    pointer-events: none;
-    font-size: 1.6rem;
-    margin-bottom: -3px;
+  &:hover {
+    background: rgba(255, 255, 255, 0.075);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  &:focus-within {
+    border-color: rgba(1, 173, 228, 0.55);
+    box-shadow:
+      0 16px 44px rgba(0, 0, 0, 0.38),
+      0 0 0 3px rgba(1, 173, 228, 0.22);
   }
 `;
 
 const Select = styled.select`
-  font-size: 1.5rem;
+  height: 100%;
+  width: 100%;
 
-  position: relative;
-  display: inline-block;
+  margin: 0;
+  padding: 0 44px 0 14px;
+
+  font-size: 1.3rem;
+  font-weight: 650;
+  letter-spacing: -0.1px;
+
+  color: rgba(255, 255, 255, 0.9);
+  background: transparent;
+
+  border: 0;
+  outline: 0;
 
   -webkit-appearance: none;
   -moz-appearance: none;
-  -ms-appearance: none;
   appearance: none;
-  outline: 0;
-  box-shadow: none;
-  border: 0 !important;
-  background: var(--clr-secondary);
-  background-image: none;
 
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding-left: 1.5rem;
-  color: var(--clr-white);
   cursor: pointer;
 
   option {
+    color: #0b0d12;
+    background: #ffffff;
     text-transform: capitalize;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+`;
+
+const Caret = styled.svg`
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 18px;
+  height: 18px;
+
+  color: rgba(255, 255, 255, 0.75);
+
+  pointer-events: none;
+
+  path {
+    fill: currentColor;
   }
 `;

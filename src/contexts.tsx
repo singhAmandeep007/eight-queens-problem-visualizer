@@ -63,7 +63,7 @@ const defaultControlContextValue: ControlContextValue = {
 
 export const ControlContext = createContext<ControlContextValue>(defaultControlContextValue);
 
-export function ControlContextProvider(props: { children: React.ReactNode }) {
+export function ControlContextProvider(props: { children: React.ReactNode; initialMode?: ControlMode }) {
   const simulationSpeedDefault = useMemo(() => {
     // historical default used index 2 in the original JS
     const raw = valueAt(simulationSpeedControlBarConfig.options as Record<string, unknown>, 2) as SimulationSpeed;
@@ -77,9 +77,10 @@ export function ControlContextProvider(props: { children: React.ReactNode }) {
   }, []);
 
   const modeDefault = useMemo(() => {
+    if (props.initialMode) return props.initialMode;
     const raw = firstValue(modeControlBarConfig.options as Record<string, unknown>) as ControlMode;
     return raw ?? ("manual" as ControlMode);
-  }, []);
+  }, [props.initialMode]);
 
   const chessPieceTypeDefault = useMemo(() => {
     const raw = firstValue(chessPieceTypeControlBarConfig.options as Record<string, unknown>) as ChessPieceTypeOption;
